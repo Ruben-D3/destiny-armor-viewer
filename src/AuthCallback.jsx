@@ -1,38 +1,27 @@
+// src/AuthCallback.jsx
 import React, { useEffect } from "react";
 
 function AuthCallback() {
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
+    // Read the code Bungie sent
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
 
-    if (!code) {
-      alert("No code found in URL");
-      return;
+    if (code) {
+      console.log("Bungie authorization code:", code);
+
+      // TODO: send this code to your backend to exchange for access token
+      // For now, we just show it in alert
+      alert("Authorization code received! Check console for details.");
+    } else {
+      alert("No code received. Check Bungie login.");
     }
-
-    fetch("http://127.0.0.1:8000/auth/exchange", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ code }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("🔥 Bungie Token Response:", data);
-
-        alert("Login successful! Check console for token data.");
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error connecting to backend");
-      });
   }, []);
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1>Logging in...</h1>
-      <p>Connecting to Bungie...</p>
+      <h2>Processing Bungie login...</h2>
+      <p>Please wait a moment.</p>
     </div>
   );
 }
