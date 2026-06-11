@@ -1,44 +1,39 @@
-from fastapi import FastAPI
+# backend/main.py
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 import requests
+import os
 
 app = FastAPI()
 
+# Allow your frontend to call the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # For now; later restrict to your domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-BUNGIE_TOKEN_URL = "https://www.bungie.net/platform/app/oauth/token/"
+BUNGIE_CLIENT_ID = 52730
+BUNGIE_CLIENT_SECRET = "YOUR_BUNGIE_CLIENT_SECRET"  # Put your secret here
 
-CLIENT_ID = "YOUR_BUNGIE_CLIENT_ID"
-CLIENT_SECRET = "YOUR_BUNGIE_CLIENT_SECRET"
-
-@app.get("/")
-def home():
-    return {"status": "backend running"}
-
-@app.post("/auth/exchange")
-def exchange_code(payload: dict):
-    code = payload.get("code")
-
-    if not code:
-        return {"error": "missing code"}
-
+@app.get("/auth/token")
+def get_access_token(code: str):
+    """
+    Exchange Bungie authorization code for access token
+    """
+    url = "https://www.bungie.net/Platform/App/OAuth/Token/"
     data = {
         "grant_type": "authorization_code",
         "code": code,
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
+        "client_id": BUNGIE_CLIENT_ID,
+        "client_secret": BUNGIE_CLIENT_SECRET,
     }
-
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded"
-    }
-
-    response = requests.post(BUNGIE_TOKEN_URL, data=data, headers=headers)
-
+    response = requests.post(url, data=data)
     return response.json()
+
+
+@app.get("/hello")
+def hello():
+    return {"message": "Backend is running"}

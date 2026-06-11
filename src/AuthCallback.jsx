@@ -3,16 +3,22 @@ import React, { useEffect } from "react";
 
 function AuthCallback() {
   useEffect(() => {
-    // Read the code Bungie sent
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
     if (code) {
-      console.log("Bungie authorization code:", code);
+      console.log("Authorization code:", code);
 
-      // TODO: send this code to your backend to exchange for access token
-      // For now, we just show it in alert
-      alert("Authorization code received! Check console for details.");
+      fetch(`https://destiny-armor-viewer-backend.vercel.app/auth/token?code=${code}`)
+        .then(res => res.json())
+        .then(data => {
+          console.log("Access token response:", data);
+          alert("Access token received! Check console.");
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Failed to get access token.");
+        });
     } else {
       alert("No code received. Check Bungie login.");
     }
