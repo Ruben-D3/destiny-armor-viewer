@@ -16,7 +16,7 @@ app.add_middleware(
 )
 
 BUNGIE_CLIENT_ID = 52730
-BUNGIE_CLIENT_SECRET = "YOUR_BUNGIE_CLIENT_SECRET"  # Put your secret here
+BUNGIE_CLIENT_SECRET = "YUlUBMUSrs-7D3sOHD0rqe4Hx-8cW0QRSEDgeraCj98"  # Put your secret here
 
 @app.get("/auth/token")
 def get_access_token(code: str):
