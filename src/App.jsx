@@ -2,7 +2,7 @@
 import React from "react";
 
 function App() {
-  const CLIENT_ID = "YOUR_BUNGIE_CLIENT_ID"; // <-- replace this
+  const CLIENT_ID = "52730"; // <-- replace this
 
   // MUST match exactly what is set in Bungie Developer Portal
   const REDIRECT_URI =
