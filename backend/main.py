@@ -1,39 +1,38 @@
-# backend/main.py
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import requests
-import os
 
 app = FastAPI()
 
-# Allow your frontend to call the backend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # For now; later restrict to your domain
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173", "https://destiny-armor-viewer.vercel.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 BUNGIE_CLIENT_ID = 52730
-BUNGIE_CLIENT_SECRET = "YUlUBMUSrs-7D3sOHD0rqe4Hx-8cW0QRSEDgeraCj98"  # Put your secret here
+BUNGIE_CLIENT_SECRET = "YUlUBMUSrs-7D3sOHD0rqe4Hx-8cW0QRSEDgeraCj98"
+
+TOKEN_URL = "https://www.bungie.net/platform/app/oauth/token/"
+
+@app.get("/")
+def home():
+    return {"status": "ok"}
 
 @app.get("/auth/token")
-def get_access_token(code: str):
-    """
-    Exchange Bungie authorization code for access token
-    """
-    url = "https://www.bungie.net/Platform/App/OAuth/Token/"
+def exchange_token(code: str):
     data = {
         "grant_type": "authorization_code",
         "code": code,
         "client_id": BUNGIE_CLIENT_ID,
         "client_secret": BUNGIE_CLIENT_SECRET,
     }
-    response = requests.post(url, data=data)
+
+    headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    response = requests.post(TOKEN_URL, data=data, headers=headers)
+
     return response.json()
-
-
-@app.get("/hello")
-def hello():
-    return {"message": "Backend is running"}
